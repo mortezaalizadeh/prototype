@@ -1,0 +1,64 @@
+name: "Shared"
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "main"
+    paths:
+      - ".github/workflows/lint.yml"
+      - ".github/workflows/shared.yml"
+      - "src/go.mod"
+      - "src/go.sum"
+      - "src/shared/**"
+  pull_request:
+    branches:
+      - "main"
+    paths:
+      - ".github/workflows/lint.yml"
+      - ".github/workflows/shared.yml"
+      - "src/go.mod"
+      - "src/go.sum"
+      - "src/shared/**"
+
+jobs:
+  build:
+    name: "Build - Shared"
+    runs-on:
+      ubuntu-latest
+    env:
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+
+    steps:
+      - name: Checkout code with full history
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set required environment variable
+        run: |
+          echo "unittest_container_tag=$(uuidgen)" >> $GITHUB_ENV
+          echo "unittest_extract_container_name=$(uuidgen)" >> $GITHUB_ENV
+
+      - name: Unit Tests
+        run: |
+          VERSION=${{ github.sha }} docker build \
+             --pull \
+             --target test \
+            --tag ${{ env.unittest_container_tag }} \
+            --file ./src/shared/Dockerfile \
+            ./src
+
+      - name: Extract coverage output
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          mkdir -p ./coverage/reports
+          docker create --name ${{ env.unittest_extract_container_name }} ${{ env.unittest_container_tag }}
+          docker cp ${{ env.unittest_extract_container_name }}:/coverage/reports/. "./coverage/reports/"
+
+      - name: Clean up
+        if: always()
+        run: |
+          docker rm ${{ env.unittest_container_tag }} || true
+          docker rm ${{ env.unittest_extract_container_name }} || true
