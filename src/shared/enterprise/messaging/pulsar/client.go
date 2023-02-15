@@ -3,7 +3,7 @@ package pulsar
 import (
 	"time"
 
-	"mortezaalizadeh/prototype/src/shared/enterprise/os"
+	"github.com/Connectilly/connectilly/src/shared/enterprise/os"
 
 	"github.com/apache/pulsar-client-go/pulsar"
 	"go.uber.org/zap"

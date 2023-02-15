@@ -8,12 +8,12 @@ package appsetup
 
 import (
 	"go.uber.org/zap"
-	"mortezaalizadeh/prototype/src/shared/enterprise/configuration"
-	"mortezaalizadeh/prototype/src/shared/enterprise/database"
-	"mortezaalizadeh/prototype/src/shared/enterprise/database/postgres"
-	"mortezaalizadeh/prototype/src/shared/enterprise/messaging/pulsar"
-	"mortezaalizadeh/prototype/src/shared/enterprise/os"
-	"mortezaalizadeh/prototype/src/shared/enterprise/time"
+	"github.com/Connectilly/connectilly/src/shared/enterprise/configuration"
+	"github.com/Connectilly/connectilly/src/shared/enterprise/database"
+	"github.com/Connectilly/connectilly/src/shared/enterprise/database/postgres"
+	"github.com/Connectilly/connectilly/src/shared/enterprise/messaging/pulsar"
+	"github.com/Connectilly/connectilly/src/shared/enterprise/os"
+	"github.com/Connectilly/connectilly/src/shared/enterprise/time"
 )
 
 // Injectors from wire.go:

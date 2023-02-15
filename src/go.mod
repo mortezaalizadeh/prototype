@@ -1,4 +1,4 @@
-module mortezaalizadeh/prototype/src
+module github.com/Connectilly/connectilly/src
 
 go 1.20
 

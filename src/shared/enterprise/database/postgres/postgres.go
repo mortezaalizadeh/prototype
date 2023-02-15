@@ -6,7 +6,7 @@ import (
 	"net"
 	"net/url"
 
-	"mortezaalizadeh/prototype/src/shared/enterprise/database"
+	"github.com/Connectilly/connectilly/src/shared/enterprise/database"
 
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
