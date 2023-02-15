@@ -1,0 +1,35 @@
+# Copyright (c) 2004-present Facebook All rights reserved.
+# Use of this source code is governed by a BSD-style
+# license that can be found in the LICENSE file.
+
+schema:
+  - ../../../../api-definitions/graphql/connectilly/organization/V1/schema.graphql
+  - ../../../../api-definitions/graphql/connectilly/organization/V1/ent.graphql
+
+exec:
+  filename: ../../organization-api/graphql/generated/generated.go
+  package: generated
+
+federation:
+  filename: ../../organization-api/graphql/generated/federation.go
+  package: generated
+  version: 2
+
+model:
+  filename: ../../organization-api/graphql/models/models_gen.go
+  package: models
+
+resolver:
+  layout: follow-schema
+  dir: ../../organization-api/graphql
+  package: graphql
+
+autobind:
+  - github.com/Connectilly/connectilly/src/organization/shared/entities
+
+models:
+  ID:
+    model:
+      - github.com/99designs/gqlgen/graphql.IntID
+  Node:
+    model: github.com/Connectilly/connectilly/src/organization/shared/entities.Noder

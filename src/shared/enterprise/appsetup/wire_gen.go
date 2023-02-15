@@ -7,13 +7,13 @@
 package appsetup
 
 import (
-	"go.uber.org/zap"
 	"github.com/Connectilly/connectilly/src/shared/enterprise/configuration"
 	"github.com/Connectilly/connectilly/src/shared/enterprise/database"
 	"github.com/Connectilly/connectilly/src/shared/enterprise/database/postgres"
 	"github.com/Connectilly/connectilly/src/shared/enterprise/messaging/pulsar"
 	"github.com/Connectilly/connectilly/src/shared/enterprise/os"
 	"github.com/Connectilly/connectilly/src/shared/enterprise/time"
+	"go.uber.org/zap"
 )
 
 // Injectors from wire.go:
