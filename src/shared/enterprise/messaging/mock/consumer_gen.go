@@ -6,9 +6,9 @@ package mock_messaging
 
 import (
 	context "context"
-	messaging "github.com/Connectilly/connectilly/src/shared/enterprise/messaging"
 	reflect "reflect"
 
+	messaging "github.com/Connectilly/connectilly/src/shared/enterprise/messaging"
 	gomock "github.com/golang/mock/gomock"
 )
 
