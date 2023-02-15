@@ -5,7 +5,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Connectilly/connectilly/src/shared/enterprise/os"
+	"mortezaalizadeh/prototype/src/shared/enterprise/os"
+
 	"go.uber.org/zap"
 	"gopkg.in/yaml.v3"
 )

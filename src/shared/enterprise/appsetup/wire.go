@@ -19,14 +19,14 @@
 package appsetup
 
 import (
-	"github.com/Connectilly/connectilly/src/shared/enterprise/configuration"
-	"github.com/Connectilly/connectilly/src/shared/enterprise/database"
-	"github.com/Connectilly/connectilly/src/shared/enterprise/database/postgres"
-	"github.com/Connectilly/connectilly/src/shared/enterprise/messaging/pulsar"
-	"github.com/Connectilly/connectilly/src/shared/enterprise/os"
-	"github.com/Connectilly/connectilly/src/shared/enterprise/time"
 	"github.com/google/wire"
 	"go.uber.org/zap"
+	"mortezaalizadeh/prototype/src/shared/enterprise/configuration"
+	"mortezaalizadeh/prototype/src/shared/enterprise/database"
+	"mortezaalizadeh/prototype/src/shared/enterprise/database/postgres"
+	"mortezaalizadeh/prototype/src/shared/enterprise/messaging/pulsar"
+	"mortezaalizadeh/prototype/src/shared/enterprise/os"
+	"mortezaalizadeh/prototype/src/shared/enterprise/time"
 )
 
 func NewConfigurationHelper(logger *zap.SugaredLogger) (configuration.ConfigurationHelper, error) {

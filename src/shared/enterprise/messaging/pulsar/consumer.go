@@ -3,7 +3,8 @@ package pulsar
 import (
 	"context"
 
-	"github.com/Connectilly/connectilly/src/shared/enterprise/messaging"
+	"mortezaalizadeh/prototype/src/shared/enterprise/messaging"
+
 	"github.com/apache/pulsar-client-go/pulsar"
 	"go.uber.org/zap"
 )

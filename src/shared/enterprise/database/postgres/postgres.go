@@ -6,9 +6,10 @@ import (
 	"net"
 	"net/url"
 
+	"mortezaalizadeh/prototype/src/shared/enterprise/database"
+
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
-	"github.com/Connectilly/connectilly/src/shared/enterprise/database"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"go.uber.org/zap"
 )
