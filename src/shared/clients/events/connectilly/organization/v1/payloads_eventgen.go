@@ -3,14 +3,15 @@
 
 package organizationv1
 
-
-    import (
+import (
+    
+      "encoding/json"
+      "fmt"
+    
       "time"
     
       "github.com/google/uuid"
     )
-    
-    
     
     // OrganizationEvent represents a OrganizationEvent model.
 type OrganizationEvent struct {
@@ -69,3 +70,28 @@ type Organization struct {
   AdditionalProperties *map[string]interface{} `json:"additionalProperties,omitempty"` 
 }
     
+func (enumVal EventType) MarshalJSON() ([]byte, error) {
+  return json.Marshal(enumVal.String())
+}
+
+func (enumVal EventType) String() string {
+  return fmt.Sprintf("%v", EventTypeValues[int(enumVal)])
+}
+
+func (enumVal *EventType) UnmarshalJSON(buffer []byte) error {
+  var str string
+  if err := json.Unmarshal(buffer, &str); err != nil {
+    return err
+  }
+
+  var tmpEnumVal EventType
+  var ok bool
+
+  if tmpEnumVal, ok = ValuesToEventType[str]; !ok {
+    return fmt.Errorf("unknown %s", str)
+  }
+
+  *enumVal = tmpEnumVal
+
+  return nil
+}
