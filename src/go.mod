@@ -9,6 +9,7 @@ require (
 	github.com/99designs/gqlgen v0.17.5-0.20220428154617-9250f9ac1f90
 	github.com/apache/pulsar-client-go v0.9.0
 	github.com/golang/mock v1.6.0
+	github.com/google/uuid v1.3.0
 	github.com/google/wire v0.5.0
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/jackc/pgx/v5 v5.3.0
@@ -42,7 +43,6 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.3 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
-	github.com/google/uuid v1.3.0 // indirect
 	github.com/gsterjov/go-libsecret v0.0.0-20161001094733-a6f4afe4910c // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/hcl/v2 v2.13.0 // indirect

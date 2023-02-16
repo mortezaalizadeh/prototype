@@ -1,0 +1,110 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "OrganizationEvent",
+  "description": "An event describing a change in Organization domain.",
+  "$id": "http://connectilly.com/schemas/organizationEvent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "metadata",
+    "data"
+  ],
+  "properties": {
+    "metadata": {
+      "$ref": "#/definitions/metadata"
+    },
+    "data": {
+      "$ref": "#/definitions/data"
+    }
+  },
+  "definitions": {
+    "metadata": {
+      "$id": "metadata",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "source",
+        "eventType",
+        "subject",
+        "time",
+        "correlationId",
+        "actor"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique message ID",
+          "format": "uuid"
+        },
+        "source": {
+          "type": "string",
+          "format": "urn",
+          "example": "urn:nz:co:omiga:example"
+        },
+        "eventType": {
+          "$ref": "#/definitions/eventType"
+        },
+        "subject": {
+          "type": "string"
+        },
+        "time": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2021-03-25T23:04:34.000Z"
+        },
+        "correlationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "actor": {
+          "type": "string",
+          "format": "urn",
+          "example": "TBD"
+        }
+      }
+    },
+    "eventType": {
+      "$id": "eventType",
+      "type": "string",
+      "enum": [
+        "organizationCreated",
+        "organizationUpdated"
+      ]
+    },
+    "data": {
+      "$id": "data",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "afterState"
+      ],
+      "properties": {
+        "beforeState": {
+          "$ref": "#/definitions/organization"
+        },
+        "afterState": {
+          "$ref": "#/definitions/organization"
+        }
+      }
+    },
+    "organization": {
+      "$id": "organization",
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "The unique organization ID"
+        },
+        "name": {
+          "type": "string",
+          "description": "The organization name"
+        }
+      }
+    }
+  }
+}

@@ -9,22 +9,18 @@ export default async function ({ asyncapi, params }) {
     presets: [
       {
         struct: {
-          field({ fieldName, field, renderer, model: { required } }) {
-            const formattedFieldName = renderer.nameField(fieldName, field);
-            const fieldType = renderer.renderType(field);
-
-            const description = field.originalInput
-              ? ` // ${field.originalInput["description"]}`
+          field({ field }) {
+            const isRequired = field.required;
+            const originalFieldName = field.unconstrainedPropertyName;
+            const golangFieldName = field.propertyName;
+            const fieldType = field.property.type;
+            const originalInput = field.property.originalInput
+            const description = originalInput.description
+              ? ` // ${originalInput.description}`
               : "";
-
-            const isRequired = required
-              ? required.findIndex((item) => item === fieldName) !== -1
-              : false;
             const unrequiredMark = !isRequired ? "*" : "";
+            const format = originalInput.format
 
-            const format = field.originalInput
-              ? field.originalInput["format"]
-              : "";
             let finalFieldType = fieldType.startsWith("*")
               ? fieldType.substring(1)
               : fieldType;
@@ -57,14 +53,14 @@ export default async function ({ asyncapi, params }) {
             }
 
             const tag = isRequired
-              ? `\`json:"${fieldName}"\``
-              : `\`json:"${fieldName},omitempty"\``;
+              ? `\`json:"${originalFieldName}"\``
+              : `\`json:"${originalFieldName},omitempty"\``;
 
             if (field.type === "array" && finalFieldType.startsWith("[]*")) {
               finalFieldType = "[]" + finalFieldType.substring("[]*".length);
             }
 
-            return `${formattedFieldName} ${unrequiredMark}${finalFieldType} ${tag} ${description}`;
+            return `${golangFieldName} ${unrequiredMark}${finalFieldType} ${tag} ${description}`;
           },
         },
       },

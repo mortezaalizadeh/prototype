@@ -1,0 +1,111 @@
+asyncapi: 2.6.0
+
+info:
+  title: Organization
+  version: 1.0.0
+  contact:
+    name: Organization Domain
+    email: morteza.alizadeh@gmail.com
+
+servers:
+  production:
+    url: connectilly.com
+    protocol: kafka
+    description: N.A.
+
+defaultContentType: application/json
+
+channels:
+  organization.v1.event:
+    description: Enterprise topic for Organization events
+    publish:
+      message:
+        $ref: "#/components/messages/organizationEvent"
+
+components:
+  messages:
+    organizationEvent:
+      description: An event describing a change in Organization domain.
+      payload:
+        $ref: "#/components/schemas/organizationEvent"
+
+  schemas:
+    organizationEvent:
+      $id: organizationEvent
+      type: object
+      additionalProperties: false
+      required:
+        - metadata
+        - data
+      properties:
+        metadata:
+          $ref: "#/components/schemas/metadata"
+        data:
+          $ref: "#/components/schemas/data"
+
+    metadata:
+      $id: metadata
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - source
+        - eventType
+        - subject
+        - time
+        - correlationId
+        - actor
+      properties:
+        id:
+          type: string
+          description: The unique message ID
+          format: uuid
+        source:
+          type: string
+          format: urn
+          example: urn:nz:co:omiga:example
+        eventType:
+          $id: eventType
+          type: string
+          enum:
+            - organizationCreated
+            - organizationUpdated
+        subject:
+          type: string
+        time:
+          type: string
+          format: date-time
+          example: 2021-03-25T23:04:34.00Z
+        correlationId:
+          type: string
+          format: uuid
+        actor:
+          type: string
+          format: urn
+          example: TBD
+
+    data:
+      $id: data
+      type: object
+      additionalProperties: false
+      required:
+        - afterState
+      properties:
+        beforeState:
+          $ref: "#/components/schemas/organization"
+        afterState:
+          $ref: "#/components/schemas/organization"
+
+    organization:
+      $id: organization
+      type: object
+      additionalProperties: true
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+          description: The unique organization ID
+        name:
+          type: string
+          description: The organization name
