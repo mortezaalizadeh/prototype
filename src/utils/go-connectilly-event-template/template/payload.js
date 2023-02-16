@@ -14,18 +14,22 @@ export default async function ({ asyncapi, params }) {
             const isRequired = field.required;
             const originalFieldName = field.unconstrainedPropertyName;
             const golangFieldName = field.propertyName;
-            const fieldType = field.property.type;
             const originalInput = field.property.originalInput
             const description = originalInput.description
               ? ` // ${originalInput.description}`
               : "";
             const unrequiredMark = !isRequired ? "*" : "";
             const format = originalInput.format
+            let fieldType = field.property.type;
 
             if (originalInput.enum) {
               allEnumTypes.push(fieldType)
             }
             
+            if (originalInput.type === "array") {
+              fieldType = fieldType.replace('interface{}', field.property.valueModel.union[0].type)
+            }
+
             let finalFieldType = fieldType.startsWith("*")
               ? fieldType.substring(1)
               : fieldType;
