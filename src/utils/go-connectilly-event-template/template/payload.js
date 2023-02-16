@@ -4,6 +4,7 @@ const { File } = require("@asyncapi/generator-react-sdk");
 export default async function ({ asyncapi, params }) {
   let foundTimeTypeField = false;
   let foundIDTypeField = false;
+  let allEnumTypes = []
 
   const generator = new GoGenerator({
     presets: [
@@ -21,6 +22,10 @@ export default async function ({ asyncapi, params }) {
             const unrequiredMark = !isRequired ? "*" : "";
             const format = originalInput.format
 
+            if (originalInput.enum) {
+              allEnumTypes.push(fieldType)
+            }
+            
             let finalFieldType = fieldType.startsWith("*")
               ? fieldType.substring(1)
               : fieldType;
@@ -56,7 +61,7 @@ export default async function ({ asyncapi, params }) {
               ? `\`json:"${originalFieldName}"\``
               : `\`json:"${originalFieldName},omitempty"\``;
 
-            if (field.type === "array" && finalFieldType.startsWith("[]*")) {
+            if (originalInput.type === "array" && finalFieldType.startsWith("[]*")) {
               finalFieldType = "[]" + finalFieldType.substring("[]*".length);
             }
 
@@ -75,31 +80,37 @@ package ${params.packageName}
 
 `;
 
-  if (foundTimeTypeField && foundIDTypeField) {
+  if (allEnumTypes.length > 0 || foundTimeTypeField || foundIDTypeField) {
     payloadContent =
       payloadContent +
-      `
-    import (
-      "time"
-    
-      "github.com/google/uuid"
-    )
-    
+      `import (
     `;
-  } else if (foundTimeTypeField && !foundIDTypeField) {
-    payloadContent =
-      payloadContent +
-      `
-    import "time"
 
-    `;
-  } else if (!foundTimeTypeField && foundIDTypeField) {
-    payloadContent =
+    if (allEnumTypes.length > 0) {
+      payloadContent =
       payloadContent +
       `
-    import "github.com/google/uuid"
-    
+      "encoding/json"
+      "fmt"
     `;
+    }
+
+    if (foundTimeTypeField) {
+      payloadContent = payloadContent +
+      `
+      "time"
+    `;
+    }
+
+    if (foundIDTypeField) {
+      payloadContent =
+      payloadContent +
+      `
+      "github.com/google/uuid"
+    `;
+    }
+
+    payloadContent = payloadContent + ')';
   }
 
   models.forEach((model) => {
@@ -126,6 +137,36 @@ package ${params.packageName}
     ${result}
     `;
   });
+
+  allEnumTypes.forEach(enumType => {
+    payloadContent += `
+func (enumVal ${enumType}) MarshalJSON() ([]byte, error) {
+  return json.Marshal(enumVal.String())
+}
+
+func (enumVal ${enumType}) String() string {
+  return fmt.Sprintf("%v", ${enumType}Values[int(enumVal)])
+}
+
+func (enumVal *${enumType}) UnmarshalJSON(buffer []byte) error {
+  var str string
+  if err := json.Unmarshal(buffer, &str); err != nil {
+    return err
+  }
+
+  var tmpEnumVal ${enumType}
+  var ok bool
+
+  if tmpEnumVal, ok = ValuesTo${enumType}[str]; !ok {
+    return fmt.Errorf("unknown %s", str)
+  }
+
+  *enumVal = tmpEnumVal
+
+  return nil
+}
+`;
+  })
 
   return <File name="payloads_eventgen.go">{payloadContent}</File>;
 }
