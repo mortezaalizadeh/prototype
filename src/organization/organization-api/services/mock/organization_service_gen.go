@@ -36,10 +36,10 @@ func (m *MockOrganizationService) EXPECT() *MockOrganizationServiceMockRecorder 
 }
 
 // Submit mocks base method.
-func (m *MockOrganizationService) Submit(ctx context.Context, organization models.Organization) (models.Organization, error) {
+func (m *MockOrganizationService) Submit(ctx context.Context, organization models.Organization) (*models.Organization, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Submit", ctx, organization)
-	ret0, _ := ret[0].(models.Organization)
+	ret0, _ := ret[0].(*models.Organization)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

@@ -19,11 +19,11 @@ import (
 // Injectors from wire.go:
 
 func NewHttpServer(logger *zap.SugaredLogger, appConfig configuration.AppConfig, entgoClient entities.EntgoClient) (http.HttpServer, error) {
-	organizationRepository, err := repositories.NewOrganizationRepository()
+	organizationRepository, err := repositories.NewOrganizationRepository(entgoClient)
 	if err != nil {
 		return nil, err
 	}
-	organizationService, err := services.NewOrganizationService(logger, entgoClient, organizationRepository)
+	organizationService, err := services.NewOrganizationService(logger, organizationRepository)
 	if err != nil {
 		return nil, err
 	}
