@@ -17,7 +17,7 @@
       "required": [
         "id",
         "source",
-        "eventType",
+        "type",
         "subject",
         "time",
         "correlationId",
@@ -34,8 +34,8 @@
           "format": "urn",
           "example": "urn:nz:co:omiga:example"
         },
-        "eventType": {
-          "$id": "eventType",
+        "type": {
+          "$id": "type",
           "type": "string",
           "enum": [
             "organizationCreated",
@@ -116,7 +116,7 @@
       "required": [
         "id",
         "source",
-        "eventType",
+        "type",
         "subject",
         "time",
         "correlationId",
@@ -133,8 +133,8 @@
           "format": "urn",
           "example": "urn:nz:co:omiga:example"
         },
-        "eventType": {
-          "$id": "eventType",
+        "type": {
+          "$id": "type",
           "type": "string",
           "enum": [
             "organizationCreated",
@@ -160,8 +160,8 @@
         }
       }
     },
-    "eventType": {
-      "$id": "eventType",
+    "type": {
+      "$id": "type",
       "type": "string",
       "enum": [
         "organizationCreated",
