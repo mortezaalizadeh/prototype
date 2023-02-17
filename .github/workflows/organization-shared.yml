@@ -69,6 +69,8 @@ jobs:
     name: "Build - Organization Database Migrations"
     runs-on:
       ubuntu-latest
+    permissions:
+      id-token: 'write'
     env:
       DOCKER_BUILDKIT: 1
       COMPOSE_DOCKER_CLI_BUILD: 1

@@ -19,6 +19,7 @@ jobs:
     name: Lint
     runs-on:
       ubuntu-latest
+
     steps:
       - name: Checkout code with full history
         uses: actions/checkout@v3
