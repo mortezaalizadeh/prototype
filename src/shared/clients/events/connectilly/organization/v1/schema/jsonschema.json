@@ -25,7 +25,7 @@
       "required": [
         "id",
         "source",
-        "eventType",
+        "type",
         "subject",
         "time",
         "correlationId",
@@ -42,8 +42,8 @@
           "format": "urn",
           "example": "urn:nz:co:omiga:example"
         },
-        "eventType": {
-          "$ref": "#/definitions/eventType"
+        "type": {
+          "$ref": "#/definitions/type"
         },
         "subject": {
           "type": "string"
@@ -64,8 +64,8 @@
         }
       }
     },
-    "eventType": {
-      "$id": "eventType",
+    "type": {
+      "$id": "type",
       "type": "string",
       "enum": [
         "organizationCreated",

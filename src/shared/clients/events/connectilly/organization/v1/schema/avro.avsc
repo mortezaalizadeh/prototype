@@ -21,11 +21,11 @@
             "type": "string"
           },
           {
-            "name": "eventType",
+            "name": "type",
             "doc": "",
             "type": {
               "type": "enum",
-              "name": "eventType_enum_0",
+              "name": "type_enum_0",
               "symbols": [
                 "organizationCreated",
                 "organizationUpdated"

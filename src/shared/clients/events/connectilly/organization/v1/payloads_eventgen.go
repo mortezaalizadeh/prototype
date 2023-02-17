@@ -24,7 +24,7 @@ type OrganizationEvent struct {
 type Metadata struct {
   Id uuid.UUID `json:"id"`  // The unique message ID
   Source string `json:"source"` 
-  EventType EventType `json:"eventType"` 
+  ReservedType ReservedType `json:"type"` 
   Subject string `json:"subject"` 
   Time time.Time `json:"time"` 
   CorrelationId uuid.UUID `json:"correlationId"` 
@@ -32,26 +32,26 @@ type Metadata struct {
 }
     
     
-    // EventType represents an enum of EventType.
-type EventType uint
+    // ReservedType represents an enum of ReservedType.
+type ReservedType uint
 
 const (
-  EventTypeOrganizationCreated EventType = iota
-  EventTypeOrganizationUpdated
+  ReservedTypeOrganizationCreated ReservedType = iota
+  ReservedTypeOrganizationUpdated
 )
 
 // Value returns the value of the enum.
-func (op EventType) Value() any {
-	if op >= EventType(len(EventTypeValues)) {
+func (op ReservedType) Value() any {
+	if op >= ReservedType(len(ReservedTypeValues)) {
 		return nil
 	}
-	return EventTypeValues[op]
+	return ReservedTypeValues[op]
 }
 
-var EventTypeValues = []any{"organizationCreated","organizationUpdated"}
-var ValuesToEventType = map[any]EventType{
-  EventTypeValues[EventTypeOrganizationCreated]: EventTypeOrganizationCreated,
-  EventTypeValues[EventTypeOrganizationUpdated]: EventTypeOrganizationUpdated,
+var ReservedTypeValues = []any{"organizationCreated","organizationUpdated"}
+var ValuesToReservedType = map[any]ReservedType{
+  ReservedTypeValues[ReservedTypeOrganizationCreated]: ReservedTypeOrganizationCreated,
+  ReservedTypeValues[ReservedTypeOrganizationUpdated]: ReservedTypeOrganizationUpdated,
 }
 
     
@@ -70,24 +70,24 @@ type Organization struct {
   AdditionalProperties *map[string]interface{} `json:"additionalProperties,omitempty"` 
 }
     
-func (enumVal EventType) MarshalJSON() ([]byte, error) {
+func (enumVal ReservedType) MarshalJSON() ([]byte, error) {
   return json.Marshal(enumVal.String())
 }
 
-func (enumVal EventType) String() string {
-  return fmt.Sprintf("%v", EventTypeValues[int(enumVal)])
+func (enumVal ReservedType) String() string {
+  return fmt.Sprintf("%v", ReservedTypeValues[int(enumVal)])
 }
 
-func (enumVal *EventType) UnmarshalJSON(buffer []byte) error {
+func (enumVal *ReservedType) UnmarshalJSON(buffer []byte) error {
   var str string
   if err := json.Unmarshal(buffer, &str); err != nil {
     return err
   }
 
-  var tmpEnumVal EventType
+  var tmpEnumVal ReservedType
   var ok bool
 
-  if tmpEnumVal, ok = ValuesToEventType[str]; !ok {
+  if tmpEnumVal, ok = ValuesToReservedType[str]; !ok {
     return fmt.Errorf("unknown %s", str)
   }
 
