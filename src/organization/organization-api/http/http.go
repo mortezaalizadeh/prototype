@@ -45,7 +45,7 @@ func (hs *httpServer) GetGraphQLHandler() http.Handler {
 func (hs *httpServer) GetHandler() http.Handler {
 	mux := http.NewServeMux()
 
-	mux.Handle("/", playground.Handler("Omiga - Order API", "/graphql"))
+	mux.Handle("/", playground.Handler("Connectilly - Organization API", "/graphql"))
 	mux.Handle("/graphql", hs.graphQLServer)
 	mux.HandleFunc("/health", hs.healthHandler)
 

@@ -15,7 +15,7 @@ func versionCommand() *cobra.Command {
 		Long:  "Return order-api version",
 		Run: func(cmd *cobra.Command, args []string) {
 			util.PrintInfo("Order API\n")
-			util.PrintInfo(fmt.Sprintf("Copyright (C) %d, Omiga Ltd.\n", time.Now().Year()))
+			util.PrintInfo(fmt.Sprintf("Copyright (C) %d, Connectilly Ltd.\n", time.Now().Year()))
 			util.PrintYAML(util.GetVersion())
 		},
 	}
