@@ -1,0 +1,24 @@
+{
+  "name": "connectilly-gateway",
+  "version": "0.0.1",
+  "description": "Connectilly Gateway - Federated GraphQL",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Connectilly/connectilly.git"
+  },
+  "author": "Morteza Alizadeh",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/Connectilly/connectilly/issues"
+  },
+  "homepage": "https://github.com/Connectilly/connectilly#readme",
+  "dependencies": {
+    "@apollo/gateway": "^2.3.2",
+    "apollo-server": "^3.10.1",
+    "graphql": "^16.6.0"
+  }
+}

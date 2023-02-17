@@ -1,0 +1,42 @@
+version: "3.8"
+
+networks:
+  connectilly_network:
+
+
+volumes:
+  connectilly_pulsar_data:
+  connectilly_postgres_data:
+
+
+services:
+  dozzle:
+    image: amir20/dozzle:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 9999:8080
+    profiles:
+      - core
+      - organization
+      - gateway
+      - all
+    networks:
+      - connectilly_network
+
+  postgres:
+    image: postgres:15.2-alpine
+    restart: unless-stopped
+    volumes:
+      - connectilly_postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: "12345678"
+    ports:
+      - "5432:5432"
+    profiles:
+      - core
+      - organization
+      - gateway
+      - all
+    networks:
+      - connectilly_network

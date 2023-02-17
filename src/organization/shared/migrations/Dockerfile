@@ -1,5 +1,7 @@
 # syntax = docker/dockerfile:1.4.1
-FROM microbusiness/atlas:latest
+ARG BUILD_IMAGE=microbusiness/atlas:latest
+
+FROM $BUILD_IMAGE as test
 LABEL maintainer="morteza.alizadeh@gmail.com"
 
 WORKDIR /migrations
