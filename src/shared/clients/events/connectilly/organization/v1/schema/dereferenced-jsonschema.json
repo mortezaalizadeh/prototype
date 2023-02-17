@@ -32,7 +32,7 @@
         "source": {
           "type": "string",
           "format": "urn",
-          "example": "urn:nz:co:omiga:example"
+          "example": "urn:com:connectilly:example"
         },
         "type": {
           "$id": "type",
@@ -131,7 +131,7 @@
         "source": {
           "type": "string",
           "format": "urn",
-          "example": "urn:nz:co:omiga:example"
+          "example": "urn:com:connectilly:example"
         },
         "type": {
           "$id": "type",
