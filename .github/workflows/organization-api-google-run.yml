@@ -74,16 +74,6 @@ jobs:
           docker create --name ${{ env.unittest_extract_container_name }} ${{ env.unittest_container_tag }}
           docker cp ${{ env.unittest_extract_container_name }}:/coverage/reports/. "./coverage/reports/"
 
-      - name: Upload coverage to Codecov
-        if: ${{ github.ref == 'refs/heads/main' }}
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./coverage/reports/
-          flags: unittests,organization-api-aws-lambdas-graphql
-          fail_ci_if_error: true
-          verbose: true
-
       - name: Build final
         run: |
           VERSION=${{ github.sha }} docker build \
