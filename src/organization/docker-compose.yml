@@ -1,0 +1,60 @@
+﻿version: "3.8"
+
+services:
+  organization-database-create:
+    image: ${DOCKER_REGISTRY-}organization-database-create
+    command: "/connectilly/connectillyctl database provision --name organization"
+    build:
+      context: .
+      dockerfile: shared/connectillyctl/Dockerfile
+      target: final
+    restart: on-failure
+    environment:
+      CONNECTILLY_POSTGRES_CONNECTIONSTRING: "postgres://postgres:12345678@postgres"
+    depends_on:
+      - postgres
+    profiles:
+      - core
+      - organization
+      - all
+    networks:
+      - connectilly_network
+
+  organization-database-migration:
+    image: ${DOCKER_REGISTRY-}organization-database-migration
+    build:
+      context: .
+      dockerfile: organization/shared/migrations/Dockerfile
+    restart: on-failure
+    environment:
+      CONNECTILLY_POSTGRES_CONNECTIONSTRING: "postgres://postgres:12345678@postgres/organization?sslmode=disable"
+    depends_on:
+      - postgres
+      - organization-database-create
+    profiles:
+      - core
+      - organization
+      - all
+    networks:
+      - connectilly_network
+
+  organization-api:
+    image: ${DOCKER_REGISTRY-}organization-api
+    build:
+      context: .
+      dockerfile: organization/organization-api/Dockerfile
+      target: final
+    restart: unless-stopped
+    environment:
+      CONNECTILLY_APP_LISTENINGINTERFACE: ":80"
+      CONNECTILLY_POSTGRES_CONNECTIONSTRING: "postgres://postgres:12345678@postgres/organization"
+    ports:
+      - "10000:80"
+    depends_on:
+      - postgres
+      - organization-database-migration
+    profiles:
+      - organization
+      - all
+    networks:
+      - connectilly_network

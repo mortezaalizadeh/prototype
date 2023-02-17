@@ -1,0 +1,15 @@
+﻿version: "3.8"
+
+services:
+  connectillyctl:
+    image: ${DOCKER_REGISTRY-}connectillyctl
+    build:
+      context: .
+      dockerfile: shared/connectillyctl/Dockerfile
+      target: final
+    restart: on-failure
+    profiles:
+      - core
+      - all
+    networks:
+      - connectilly_network

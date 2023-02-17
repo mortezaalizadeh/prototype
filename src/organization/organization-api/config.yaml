@@ -1,0 +1,7 @@
+app:
+  listeningInterface: ":10000"
+  source: "urn::connectilly::organization::organization-api"
+
+postgres:
+  connectionString: "postgres://postgres:12345678@localhost/organization"
+  maxOpenConns: 10
