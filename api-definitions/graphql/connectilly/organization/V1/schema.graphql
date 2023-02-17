@@ -4,6 +4,7 @@ scalar UUID
 
 schema {
   query: Query
+  mutation: Mutation
 }
 
 """
@@ -49,6 +50,20 @@ extend type Query {
 
     where: OrganizationWhereInput
   ): OrganizationConnection
+}
+
+type Mutation {
+  createOrganization(input: CreateOrganizationInput!): OrganizationPayload
+}
+
+input CreateOrganizationInput {
+  clientMutationId: String
+  name: String!
+}
+
+type OrganizationPayload {
+  clientMutationId: String
+  organization: Organization
 }
 
 """

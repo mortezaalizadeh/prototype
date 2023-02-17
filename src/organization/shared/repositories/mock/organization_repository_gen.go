@@ -37,16 +37,16 @@ func (m *MockOrganizationRepository) EXPECT() *MockOrganizationRepositoryMockRec
 }
 
 // CreateOrganization mocks base method.
-func (m *MockOrganizationRepository) CreateOrganization(ctx context.Context, tx *entities.Tx, organization models.Organization) (models.Organization, error) {
+func (m *MockOrganizationRepository) CreateOrganization(ctx context.Context, organization models.Organization, tx *entities.Tx) (*models.Organization, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateOrganization", ctx, tx, organization)
-	ret0, _ := ret[0].(models.Organization)
+	ret := m.ctrl.Call(m, "CreateOrganization", ctx, organization, tx)
+	ret0, _ := ret[0].(*models.Organization)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // CreateOrganization indicates an expected call of CreateOrganization.
-func (mr *MockOrganizationRepositoryMockRecorder) CreateOrganization(ctx, tx, organization interface{}) *gomock.Call {
+func (mr *MockOrganizationRepositoryMockRecorder) CreateOrganization(ctx, organization, tx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateOrganization", reflect.TypeOf((*MockOrganizationRepository)(nil).CreateOrganization), ctx, tx, organization)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateOrganization", reflect.TypeOf((*MockOrganizationRepository)(nil).CreateOrganization), ctx, organization, tx)
 }

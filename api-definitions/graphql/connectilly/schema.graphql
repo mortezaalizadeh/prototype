@@ -1,6 +1,13 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
 scalar Cursor
 scalar Time
 scalar UUID
+type Mutation {
+  createOrganization(input: CreateOrganizationInput!): OrganizationPayload
+}
 type Organization implements Node {
   id: ID!
 }
@@ -19,6 +26,10 @@ type OrganizationEdge {
   node: Organization
   "A cursor for use in pagination"
   cursor: Cursor!
+}
+type OrganizationPayload {
+  clientMutationId: String
+  organization: Organization
 }
 "Information about pagination in a connection."
 type PageInfo {
@@ -56,6 +67,10 @@ enum OrderDirection {
 }
 enum OrganizationOrderField {
   name
+}
+input CreateOrganizationInput {
+  clientMutationId: String
+  name: String!
 }
 input OrganizationOrder {
   direction: OrderDirection!
