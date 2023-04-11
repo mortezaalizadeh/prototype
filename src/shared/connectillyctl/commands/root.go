@@ -20,6 +20,7 @@ func Root() *cobra.Command {
 	cmd.AddCommand(
 		versionCommand(),
 		databaseCommand(),
+		generateCommand(),
 	)
 
 	return cmd

@@ -2,6 +2,10 @@
 
 package organization
 
+import (
+	"entgo.io/ent/dialect/sql"
+)
+
 const (
 	// Label holds the string label denoting the organization type in the database.
 	Label = "organization"
@@ -27,4 +31,17 @@ func ValidColumn(column string) bool {
 		}
 	}
 	return false
+}
+
+// Order defines the ordering method for the Organization queries.
+type Order func(*sql.Selector)
+
+// ByID orders the results by the id field.
+func ByID(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByName orders the results by the name field.
+func ByName(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldName, opts...).ToFunc()
 }

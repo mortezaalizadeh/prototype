@@ -4,175 +4,31 @@ package entities
 
 import (
 	"context"
-	"encoding/base64"
 	"errors"
 	"fmt"
 	"io"
 	"strconv"
-	"strings"
 
+	"entgo.io/contrib/entgql"
 	"entgo.io/ent/dialect/sql"
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/errcode"
 	"github.com/Connectilly/connectilly/src/organization/shared/entities/organization"
 	"github.com/vektah/gqlparser/v2/gqlerror"
-	"github.com/vmihailenco/msgpack/v5"
 )
 
-// OrderDirection defines the directions in which to order a list of items.
-type OrderDirection string
-
-const (
-	// OrderDirectionAsc specifies an ascending order.
-	OrderDirectionAsc OrderDirection = "ASC"
-	// OrderDirectionDesc specifies a descending order.
-	OrderDirectionDesc OrderDirection = "DESC"
+// Common entgql types.
+type (
+	Cursor         = entgql.Cursor[int]
+	PageInfo       = entgql.PageInfo[int]
+	OrderDirection = entgql.OrderDirection
 )
 
-// Validate the order direction value.
-func (o OrderDirection) Validate() error {
-	if o != OrderDirectionAsc && o != OrderDirectionDesc {
-		return fmt.Errorf("%s is not a valid OrderDirection", o)
-	}
-	return nil
-}
-
-// String implements fmt.Stringer interface.
-func (o OrderDirection) String() string {
-	return string(o)
-}
-
-// MarshalGQL implements graphql.Marshaler interface.
-func (o OrderDirection) MarshalGQL(w io.Writer) {
-	io.WriteString(w, strconv.Quote(o.String()))
-}
-
-// UnmarshalGQL implements graphql.Unmarshaler interface.
-func (o *OrderDirection) UnmarshalGQL(val interface{}) error {
-	str, ok := val.(string)
-	if !ok {
-		return fmt.Errorf("order direction %T must be a string", val)
-	}
-	*o = OrderDirection(str)
-	return o.Validate()
-}
-
-func (o OrderDirection) reverse() OrderDirection {
-	if o == OrderDirectionDesc {
-		return OrderDirectionAsc
-	}
-	return OrderDirectionDesc
-}
-
-func (o OrderDirection) orderFunc(field string) OrderFunc {
-	if o == OrderDirectionDesc {
+func orderFunc(o OrderDirection, field string) func(*sql.Selector) {
+	if o == entgql.OrderDirectionDesc {
 		return Desc(field)
 	}
 	return Asc(field)
-}
-
-func cursorsToPredicates(direction OrderDirection, after, before *Cursor, field, idField string) []func(s *sql.Selector) {
-	var predicates []func(s *sql.Selector)
-	if after != nil {
-		if after.Value != nil {
-			var predicate func([]string, ...interface{}) *sql.Predicate
-			if direction == OrderDirectionAsc {
-				predicate = sql.CompositeGT
-			} else {
-				predicate = sql.CompositeLT
-			}
-			predicates = append(predicates, func(s *sql.Selector) {
-				s.Where(predicate(
-					s.Columns(field, idField),
-					after.Value, after.ID,
-				))
-			})
-		} else {
-			var predicate func(string, interface{}) *sql.Predicate
-			if direction == OrderDirectionAsc {
-				predicate = sql.GT
-			} else {
-				predicate = sql.LT
-			}
-			predicates = append(predicates, func(s *sql.Selector) {
-				s.Where(predicate(
-					s.C(idField),
-					after.ID,
-				))
-			})
-		}
-	}
-	if before != nil {
-		if before.Value != nil {
-			var predicate func([]string, ...interface{}) *sql.Predicate
-			if direction == OrderDirectionAsc {
-				predicate = sql.CompositeLT
-			} else {
-				predicate = sql.CompositeGT
-			}
-			predicates = append(predicates, func(s *sql.Selector) {
-				s.Where(predicate(
-					s.Columns(field, idField),
-					before.Value, before.ID,
-				))
-			})
-		} else {
-			var predicate func(string, interface{}) *sql.Predicate
-			if direction == OrderDirectionAsc {
-				predicate = sql.LT
-			} else {
-				predicate = sql.GT
-			}
-			predicates = append(predicates, func(s *sql.Selector) {
-				s.Where(predicate(
-					s.C(idField),
-					before.ID,
-				))
-			})
-		}
-	}
-	return predicates
-}
-
-// PageInfo of a connection type.
-type PageInfo struct {
-	HasNextPage     bool    `json:"hasNextPage"`
-	HasPreviousPage bool    `json:"hasPreviousPage"`
-	StartCursor     *Cursor `json:"startCursor"`
-	EndCursor       *Cursor `json:"endCursor"`
-}
-
-// Cursor of an edge type.
-type Cursor struct {
-	ID    int   `msgpack:"i"`
-	Value Value `msgpack:"v,omitempty"`
-}
-
-// MarshalGQL implements graphql.Marshaler interface.
-func (c Cursor) MarshalGQL(w io.Writer) {
-	quote := []byte{'"'}
-	w.Write(quote)
-	defer w.Write(quote)
-	wc := base64.NewEncoder(base64.RawStdEncoding, w)
-	defer wc.Close()
-	_ = msgpack.NewEncoder(wc).Encode(c)
-}
-
-// UnmarshalGQL implements graphql.Unmarshaler interface.
-func (c *Cursor) UnmarshalGQL(v interface{}) error {
-	s, ok := v.(string)
-	if !ok {
-		return fmt.Errorf("%T is not a string", v)
-	}
-	if err := msgpack.NewDecoder(
-		base64.NewDecoder(
-			base64.RawStdEncoding,
-			strings.NewReader(s),
-		),
-	).Decode(c); err != nil {
-		return fmt.Errorf("cannot decode cursor: %w", err)
-	}
-	return nil
 }
 
 const errInvalidPagination = "INVALID_PAGINATION"
@@ -325,12 +181,13 @@ func WithOrganizationFilter(filter func(*OrganizationQuery) (*OrganizationQuery,
 }
 
 type organizationPager struct {
-	order  *OrganizationOrder
-	filter func(*OrganizationQuery) (*OrganizationQuery, error)
+	reverse bool
+	order   *OrganizationOrder
+	filter  func(*OrganizationQuery) (*OrganizationQuery, error)
 }
 
-func newOrganizationPager(opts []OrganizationPaginateOption) (*organizationPager, error) {
-	pager := &organizationPager{}
+func newOrganizationPager(opts []OrganizationPaginateOption, reverse bool) (*organizationPager, error) {
+	pager := &organizationPager{reverse: reverse}
 	for _, opt := range opts {
 		if err := opt(pager); err != nil {
 			return nil, err
@@ -353,32 +210,33 @@ func (p *organizationPager) toCursor(o *Organization) Cursor {
 	return p.order.Field.toCursor(o)
 }
 
-func (p *organizationPager) applyCursors(query *OrganizationQuery, after, before *Cursor) *OrganizationQuery {
-	for _, predicate := range cursorsToPredicates(
-		p.order.Direction, after, before,
-		p.order.Field.field, DefaultOrganizationOrder.Field.field,
-	) {
+func (p *organizationPager) applyCursors(query *OrganizationQuery, after, before *Cursor) (*OrganizationQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultOrganizationOrder.Field.field, p.order.Field.field, direction) {
 		query = query.Where(predicate)
 	}
-	return query
+	return query, nil
 }
 
-func (p *organizationPager) applyOrder(query *OrganizationQuery, reverse bool) *OrganizationQuery {
+func (p *organizationPager) applyOrder(query *OrganizationQuery) *OrganizationQuery {
 	direction := p.order.Direction
-	if reverse {
-		direction = direction.reverse()
+	if p.reverse {
+		direction = direction.Reverse()
 	}
-	query = query.Order(direction.orderFunc(p.order.Field.field))
+	query = query.Order(orderFunc(direction, p.order.Field.field))
 	if p.order.Field != DefaultOrganizationOrder.Field {
-		query = query.Order(direction.orderFunc(DefaultOrganizationOrder.Field.field))
+		query = query.Order(orderFunc(direction, DefaultOrganizationOrder.Field.field))
 	}
 	return query
 }
 
-func (p *organizationPager) orderExpr(reverse bool) sql.Querier {
+func (p *organizationPager) orderExpr() sql.Querier {
 	direction := p.order.Direction
-	if reverse {
-		direction = direction.reverse()
+	if p.reverse {
+		direction = direction.Reverse()
 	}
 	return sql.ExprFunc(func(b *sql.Builder) {
 		b.Ident(p.order.Field.field).Pad().WriteString(string(direction))
@@ -396,7 +254,7 @@ func (o *OrganizationQuery) Paginate(
 	if err := validateFirstLast(first, last); err != nil {
 		return nil, err
 	}
-	pager, err := newOrganizationPager(opts)
+	pager, err := newOrganizationPager(opts, last != nil)
 	if err != nil {
 		return nil, err
 	}
@@ -419,8 +277,10 @@ func (o *OrganizationQuery) Paginate(
 		return conn, nil
 	}
 
-	o = pager.applyCursors(o, after, before)
-	o = pager.applyOrder(o, last != nil)
+	if o, err = pager.applyCursors(o, after, before); err != nil {
+		return nil, err
+	}
+	o = pager.applyOrder(o)
 	if limit := paginateLimit(first, last); limit != 0 {
 		o.Limit(limit)
 	}
@@ -495,7 +355,7 @@ type OrganizationOrder struct {
 
 // DefaultOrganizationOrder is the default ordering of Organization.
 var DefaultOrganizationOrder = &OrganizationOrder{
-	Direction: OrderDirectionAsc,
+	Direction: entgql.OrderDirectionAsc,
 	Field: &OrganizationOrderField{
 		field: organization.FieldID,
 		toCursor: func(o *Organization) Cursor {

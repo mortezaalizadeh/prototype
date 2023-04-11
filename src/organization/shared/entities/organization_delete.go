@@ -8,9 +8,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/Connectilly/connectilly/src/organization/shared/entities/predicate"
+
 	"github.com/Connectilly/connectilly/src/organization/shared/entities/internal"
 	"github.com/Connectilly/connectilly/src/organization/shared/entities/organization"
-	"github.com/Connectilly/connectilly/src/organization/shared/entities/predicate"
 )
 
 // OrganizationDelete is the builder for deleting a Organization entity.
