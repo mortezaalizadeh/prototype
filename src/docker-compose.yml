@@ -6,7 +6,7 @@ networks:
 
 volumes:
   connectilly_pulsar_data:
-  connectilly_postgres_data:
+  connectilly_cockroachdb_data:
 
 
 services:
@@ -24,15 +24,14 @@ services:
     networks:
       - connectilly_network
 
-  postgres:
-    image: postgres:15.2-alpine
-    restart: unless-stopped
-    volumes:
-      - connectilly_postgres_data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_PASSWORD: "12345678"
+  cockroachdb:
+    image: cockroachdb/cockroach:latest-v22.2
     ports:
-      - "5432:5432"
+      - "26257:26257"
+      - "8080:8080"
+    command: start-single-node --insecure
+    volumes:
+      - connectilly_cockroachdb_data:/cockroach/cockroach-data"
     profiles:
       - core
       - organization
