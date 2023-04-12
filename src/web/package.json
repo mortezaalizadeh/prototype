@@ -1,0 +1,29 @@
+{
+  "name": "connectilly",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "relay": "yarn run relay-compiler $@",
+    "relay:watch": "yarn relay --watch"
+  },
+  "dependencies": {
+    "@types/node": "18.15.11",
+    "@types/react": "18.0.34",
+    "@types/react-dom": "18.0.11",
+    "eslint": "8.38.0",
+    "eslint-config-next": "13.3.0",
+    "next": "13.3.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "typescript": "5.0.4"
+  },
+  "devDependencies": {
+    "babel-plugin-relay": "^15.0.0",
+    "graphql": "^16.6.0",
+    "relay-compiler": "^15.0.0"
+  }
+}
