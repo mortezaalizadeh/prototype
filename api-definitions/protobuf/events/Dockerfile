@@ -43,3 +43,18 @@ RUN /bin/connectillyctl \
     --eventType=Event \
     --topicName=organization.v1.event \
     --outputPath=/output/shared/clients/events/connectilly/organization/v1
+
+RUN protoc \
+    -I=/protobuf/events/connectilly \
+    --go_out=/output \
+    User_V1.proto
+
+RUN /bin/connectillyctl \
+    generate \
+    client \
+    event \
+    --protobufFilePath=/protobuf/events/connectilly/User_V1.proto \
+    --packageName=v1 \
+    --eventType=Event \
+    --topicName=user.v1.event \
+    --outputPath=/output/shared/clients/events/connectilly/user/v1
