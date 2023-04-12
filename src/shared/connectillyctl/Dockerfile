@@ -11,7 +11,6 @@ RUN mkdir -p /src/shared/enterprise \
 COPY go.mod /src/
 COPY go.sum /src/
 COPY shared/enterprise /src/shared/enterprise
-COPY shared/clients /src/shared/clients
 COPY shared/connectillyctl /src/shared/connectillyctl
 
 WORKDIR /src/shared/connectillyctl

@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/Connectilly/connectilly/src/organization/shared/entities"
+	"github.com/Connectilly/connectilly/src/organization/shared/entities/organization"
 	"github.com/Connectilly/connectilly/src/organization/shared/entities/predicate"
 )
 
@@ -24,7 +25,7 @@ type Query interface {
 	// Unique configures the query builder to filter duplicate records.
 	Unique(bool)
 	// Order specifies how the records should be ordered.
-	Order(...entities.OrderFunc)
+	Order(...func(*sql.Selector))
 	// WhereP appends storage-level predicates to the query builder. Using this method, users
 	// can use type-assertion to append predicates that do not depend on any generated package.
 	WhereP(...func(*sql.Selector))
@@ -98,44 +99,48 @@ func (f TraverseOrganization) Traverse(ctx context.Context, q entities.Query) er
 func NewQuery(q entities.Query) (Query, error) {
 	switch q := q.(type) {
 	case *entities.OrganizationQuery:
-		return &query[*entities.OrganizationQuery, predicate.Organization]{typ: entities.TypeOrganization, tq: q}, nil
+		return &query[*entities.OrganizationQuery, predicate.Organization, organization.Order]{typ: entities.TypeOrganization, tq: q}, nil
 	default:
 		return nil, fmt.Errorf("unknown query type %T", q)
 	}
 }
 
-type query[T any, P ~func(*sql.Selector)] struct {
+type query[T any, P ~func(*sql.Selector), R ~func(*sql.Selector)] struct {
 	typ string
 	tq  interface {
 		Limit(int) T
 		Offset(int) T
 		Unique(bool) T
-		Order(...entities.OrderFunc) T
+		Order(...R) T
 		Where(...P) T
 	}
 }
 
-func (q query[T, P]) Type() string {
+func (q query[T, P, R]) Type() string {
 	return q.typ
 }
 
-func (q query[T, P]) Limit(limit int) {
+func (q query[T, P, R]) Limit(limit int) {
 	q.tq.Limit(limit)
 }
 
-func (q query[T, P]) Offset(offset int) {
+func (q query[T, P, R]) Offset(offset int) {
 	q.tq.Offset(offset)
 }
 
-func (q query[T, P]) Unique(unique bool) {
+func (q query[T, P, R]) Unique(unique bool) {
 	q.tq.Unique(unique)
 }
 
-func (q query[T, P]) Order(orders ...entities.OrderFunc) {
-	q.tq.Order(orders...)
+func (q query[T, P, R]) Order(orders ...func(*sql.Selector)) {
+	rs := make([]R, len(orders))
+	for i := range orders {
+		rs[i] = orders[i]
+	}
+	q.tq.Order(rs...)
 }
 
-func (q query[T, P]) WhereP(ps ...func(*sql.Selector)) {
+func (q query[T, P, R]) WhereP(ps ...func(*sql.Selector)) {
 	p := make([]P, len(ps))
 	for i := range ps {
 		p[i] = ps[i]

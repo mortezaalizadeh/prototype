@@ -20,7 +20,7 @@ gen-dep: ## Install code generation dependencies
 
 .PHONY: generate
 generate: ## Generate code
-	@../api-definitions/asyncapi/events/scripts/generate-all.sh
+	@../api-definitions/protobuf/events/scripts/generate-all.sh
 	@GOFLAGS=-mod=mod go generate ./...
 
 .PHONY: lint

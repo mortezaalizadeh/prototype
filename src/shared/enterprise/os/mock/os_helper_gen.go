@@ -33,6 +33,34 @@ func (m *MockOsHelper) EXPECT() *MockOsHelperMockRecorder {
 	return m.recorder
 }
 
+// CopyFile mocks base method.
+func (m *MockOsHelper) CopyFile(sourcePath, destinationPath string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CopyFile", sourcePath, destinationPath)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CopyFile indicates an expected call of CopyFile.
+func (mr *MockOsHelperMockRecorder) CopyFile(sourcePath, destinationPath interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CopyFile", reflect.TypeOf((*MockOsHelper)(nil).CopyFile), sourcePath, destinationPath)
+}
+
+// CreateBinaryFile mocks base method.
+func (m *MockOsHelper) CreateBinaryFile(path string, content []byte) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateBinaryFile", path, content)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateBinaryFile indicates an expected call of CreateBinaryFile.
+func (mr *MockOsHelperMockRecorder) CreateBinaryFile(path, content interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateBinaryFile", reflect.TypeOf((*MockOsHelper)(nil).CreateBinaryFile), path, content)
+}
+
 // CreateDir mocks base method.
 func (m *MockOsHelper) CreateDir(path string) error {
 	m.ctrl.T.Helper()

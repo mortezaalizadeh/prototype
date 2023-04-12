@@ -25,5 +25,3 @@ node_modules/
 __transpiled/
 
 .watchman*
-
-!.vscode/launch.json

@@ -5,8 +5,10 @@ package entities
 import (
 	"context"
 
+	"entgo.io/contrib/entgql"
 	"entgo.io/ent/dialect/sql"
 	"github.com/99designs/gqlgen/graphql"
+	"github.com/Connectilly/connectilly/src/organization/shared/entities/organization"
 )
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
@@ -21,8 +23,27 @@ func (o *OrganizationQuery) CollectFields(ctx context.Context, satisfies ...stri
 	return o, nil
 }
 
-func (o *OrganizationQuery) collectField(ctx context.Context, op *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
+func (o *OrganizationQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(organization.Columns))
+		selectedFields = []string{organization.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "name":
+			if _, ok := fieldSeen[organization.FieldName]; !ok {
+				selectedFields = append(selectedFields, organization.FieldName)
+				fieldSeen[organization.FieldName] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		o.Select(selectedFields...)
+	}
 	return nil
 }
 
@@ -54,7 +75,7 @@ func newOrganizationPaginateArgs(rv map[string]interface{}) *organizationPaginat
 		case map[string]interface{}:
 			var (
 				err1, err2 error
-				order      = &OrganizationOrder{Field: &OrganizationOrderField{}}
+				order      = &OrganizationOrder{Field: &OrganizationOrderField{}, Direction: entgql.OrderDirectionAsc}
 			)
 			if d, ok := v[directionField]; ok {
 				err1 = order.Direction.UnmarshalGQL(d)

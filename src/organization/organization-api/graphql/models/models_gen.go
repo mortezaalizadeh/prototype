@@ -7,11 +7,11 @@ import (
 )
 
 type CreateOrganizationInput struct {
-	ClientMutationID *string `json:"clientMutationId"`
+	ClientMutationID *string `json:"clientMutationId,omitempty"`
 	Name             string  `json:"name"`
 }
 
 type OrganizationPayload struct {
-	ClientMutationID *string                `json:"clientMutationId"`
-	Organization     *entities.Organization `json:"organization"`
+	ClientMutationID *string                `json:"clientMutationId,omitempty"`
+	Organization     *entities.Organization `json:"organization,omitempty"`
 }

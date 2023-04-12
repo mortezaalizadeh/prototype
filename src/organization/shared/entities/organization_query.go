@@ -11,16 +11,17 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/Connectilly/connectilly/src/organization/shared/entities/internal"
 	"github.com/Connectilly/connectilly/src/organization/shared/entities/organization"
 	"github.com/Connectilly/connectilly/src/organization/shared/entities/predicate"
+
+	"github.com/Connectilly/connectilly/src/organization/shared/entities/internal"
 )
 
 // OrganizationQuery is the builder for querying Organization entities.
 type OrganizationQuery struct {
 	config
 	ctx        *QueryContext
-	order      []OrderFunc
+	order      []organization.Order
 	inters     []Interceptor
 	predicates []predicate.Organization
 	loadTotal  []func(context.Context, []*Organization) error
@@ -56,7 +57,7 @@ func (oq *OrganizationQuery) Unique(unique bool) *OrganizationQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (oq *OrganizationQuery) Order(o ...OrderFunc) *OrganizationQuery {
+func (oq *OrganizationQuery) Order(o ...organization.Order) *OrganizationQuery {
 	oq.order = append(oq.order, o...)
 	return oq
 }
@@ -250,7 +251,7 @@ func (oq *OrganizationQuery) Clone() *OrganizationQuery {
 	return &OrganizationQuery{
 		config:     oq.config,
 		ctx:        oq.ctx.Clone(),
-		order:      append([]OrderFunc{}, oq.order...),
+		order:      append([]organization.Order{}, oq.order...),
 		inters:     append([]Interceptor{}, oq.inters...),
 		predicates: append([]predicate.Organization{}, oq.predicates...),
 		// clone intermediate query.

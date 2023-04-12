@@ -1,0 +1,67 @@
+syntax = "proto3";
+package organization;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "shared/clients/events/connectilly/organization/v1";
+
+/**
+ * The type
+ */
+enum Type {
+  OrganizationCreated = 0;
+  OrganizationUpdated = 1;
+}
+
+/**
+ * The event
+ */
+message Event {
+  // The metadata
+  Metadata metadata = 1;
+
+  // The data
+  Data data = 2;
+}
+
+/**
+ * The organization event
+ */
+ message Metadata {
+  // The unique message ID
+  string id = 1;
+
+  // The URN specifying what source generated the event
+  string source = 2;
+
+  // The event type
+  Type type = 3;
+
+  // The event timestamp
+  google.protobuf.Timestamp time = 4;
+
+  // The correlation ID
+  string correlationId = 5;
+}
+
+/**
+ * The event
+ */
+ message Data {
+  // The before state
+  Organization beforeState = 1;
+
+  // The before state
+  Organization afterState = 2;
+}
+
+/**
+ * The organization
+ */
+ message Organization {
+  // The unique organization ID
+  string id = 1;
+
+  // The organization name
+  string name = 2;
+}

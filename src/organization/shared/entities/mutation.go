@@ -8,11 +8,10 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/Connectilly/connectilly/src/organization/shared/entities/organization"
-	"github.com/Connectilly/connectilly/src/organization/shared/entities/predicate"
-
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/Connectilly/connectilly/src/organization/shared/entities/organization"
+	"github.com/Connectilly/connectilly/src/organization/shared/entities/predicate"
 )
 
 const (
