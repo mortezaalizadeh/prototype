@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "relay": "yarn run relay-compiler $@",
-    "relay:watch": "yarn relay --watch"
+    "lint-fix": "next lint --fix",
+    "relay": "yarn run relay-compiler $@"
   },
   "dependencies": {
     "@types/node": "18.15.11",
