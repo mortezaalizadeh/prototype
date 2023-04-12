@@ -10,9 +10,9 @@ services:
       target: final
     restart: on-failure
     environment:
-      CONNECTILLY_POSTGRES_CONNECTIONSTRING: "postgres://postgres:12345678@postgres"
+      CONNECTILLY_POSTGRES_CONNECTIONSTRING: "postgres://root@cockroachdb:26257"
     depends_on:
-      - postgres
+      - cockroachdb
     profiles:
       - core
       - organization
@@ -27,9 +27,9 @@ services:
       dockerfile: organization/shared/migrations/Dockerfile
     restart: on-failure
     environment:
-      CONNECTILLY_POSTGRES_CONNECTIONSTRING: "postgres://postgres:12345678@postgres/organization?sslmode=disable"
+      CONNECTILLY_POSTGRES_CONNECTIONSTRING: "postgresql://root@cockroachdb:26257/organization?sslmode=disable"
     depends_on:
-      - postgres
+      - cockroachdb
       - organization-database-create
     profiles:
       - core
@@ -47,11 +47,11 @@ services:
     restart: unless-stopped
     environment:
       CONNECTILLY_APP_LISTENINGINTERFACE: ":80"
-      CONNECTILLY_POSTGRES_CONNECTIONSTRING: "postgres://postgres:12345678@postgres/organization"
+      CONNECTILLY_POSTGRES_CONNECTIONSTRING: "postgres://root@cockroachdb:26257/organization"
     ports:
       - "10000:80"
     depends_on:
-      - postgres
+      - cockroachdb
       - organization-database-migration
     profiles:
       - organization
